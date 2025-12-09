@@ -1,0 +1,264 @@
+---
+---
+
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <h2>Detalles</h2>
+    <button id="closeSidebar" class="close-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <div class="sidebar-content" id="sidebarContent">
+  </div>
+</div>
+
+<style>
+.message-bubble {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  padding: 1rem;
+  border-radius: 12px;
+}
+
+.message-text {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  line-height: 1.6;
+}
+
+.crypto-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.crypto-info.full {
+  gap: 1.25rem;
+}
+
+.info-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.crypto-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.info-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0;
+}
+
+.info-section {
+  background: #f9fafb;
+  padding: 0.875rem;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+}
+
+.info-section h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  margin: 0 0 0.5rem 0;
+}
+
+.info-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.info-list li {
+  font-size: 0.9rem;
+  color: #4b5563;
+  padding: 0.25rem 0;
+}
+
+.info-list li strong {
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.price-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.5rem;
+}
+
+.info-description {
+  font-size: 0.9rem;
+  color: #4b5563;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.links-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.info-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.875rem;
+  background: #3b82f6;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: background 0.2s;
+}
+
+.info-link:hover {
+  background: #2563eb;
+}
+
+.info-footer {
+  font-size: 0.85rem;
+  color: #6b7280;
+  margin: 0.5rem 0 0 0;
+  padding-top: 0.5rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.info-help {
+  font-size: 0.9rem;
+  color: #6b7280;
+  font-style: italic;
+  margin: 0.25rem 0 0 0;
+}
+
+.tickers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.ticker-item {
+  background: #f9fafb;
+  padding: 0.875rem;
+  border-radius: 8px;
+  border-left: 3px solid #10b981;
+}
+
+.ticker-header {
+  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  color: #1f2937;
+}
+
+.ticker-details {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.ticker-details li {
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.exchanges-list li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.exchanges-list li:last-child {
+  border-bottom: none;
+}
+
+@media (max-width: 640px) {
+  .info-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .crypto-icon {
+    width: 28px;
+    height: 28px;
+  }
+  
+  .info-title {
+    font-size: 1rem;
+  }
+  
+  .price-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .links-container {
+    flex-direction: column;
+  }
+  
+  .info-link {
+    width: 100%;
+    justify-content: center;
+  }
+}
+</style>
+
+<script>
+import { renderSidebarContent, renderGraphContent } from '../scripts/chatbot'
+import type { GraphDataPoint } from '../types/data'
+
+const sidebar = document.getElementById('sidebar')
+const sidebarContent = document.getElementById('sidebarContent')
+const closeSidebar = document.getElementById('closeSidebar')
+const chatContainer = document.getElementById('chatContainer')
+
+function showSidebar(data: any): void {
+  if (!sidebar) {
+    console.error('❌ sidebar element no encontrado!')
+    return
+  }
+  
+  if (!sidebarContent) {
+    console.error('❌ sidebarContent element no encontrado!')
+    return
+  }
+  sidebar.classList.add('active')
+  if (chatContainer) {
+    chatContainer.classList.add('with-sidebar')
+  }
+  
+  if (Array.isArray(data)) {
+    renderGraphContent(data as GraphDataPoint[], sidebarContent)
+  } else {
+    renderSidebarContent(data, sidebarContent)
+  }
+}
+
+function hideSidebar(): void {
+  sidebar?.classList.remove('active')
+  chatContainer?.classList.remove('with-sidebar')
+}
+
+window.addEventListener('showSidebar', ((e: CustomEvent) => {
+
+  showSidebar(e.detail.summary)
+}) as EventListener)
+
+closeSidebar?.addEventListener('click', hideSidebar)
+</script>

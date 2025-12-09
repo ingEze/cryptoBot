@@ -1,0 +1,181 @@
+---
+
+---
+
+<div class="chat-container" id="chatContainer">
+  <div class="header">
+    <div class="h-title">
+      <h1 class="gradient-text">CryptoBot - Beta</h1>
+      <p>Tu asistente inteligente de criptomonedas</p>
+    </div>
+    <div class="h-right">
+      <button type="button" class="clear-chat">Limpiar chat</button>
+      <a href="/about" class="about-btn">Sobre el proyecto</a>
+      <button type="button" class="hamburger-btn" id="hamburgerBtn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </div>
+
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <div class="mobile-menu-items">
+      <a href="/about" class="mobile-menu-item">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="16" x2="12" y2="12"></line>
+          <line x1="12" y1="8" x2="12.01" y2="8"></line>
+        </svg>
+        Sobre el proyecto
+      </a>
+      <button type="button" class="mobile-menu-item clear-chat-mobile" id="clearChatMobile">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        Limpiar chat
+      </button>
+    </div>
+  </div>
+
+  <div class="messages messages-container" id="messagesContainer">
+    <div class="message bot chat-message">
+      <div class="message-bubble bot">
+        <p class="message-text">¡Hola! 👋 Soy tu asistente de criptomonedas. Puedo ayudarte con precios, información y análisis. ¿Qué te gustaría saber?</p>
+        <p class="message-time" id="initialTime"></p>
+      </div>
+    </div>
+  </div>
+
+  <div class="input-area">
+    <div class="input-wrapper">
+      <input
+        type="text"
+        id="messageInput"
+        class="input-field"
+        placeholder="Pregunta sobre Bitcoin, Ethereum, precios..."
+      />
+      <button id="sendButton" class="send-button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+    <div class="suggestions">
+      <button class="suggestion-btn">¿Precio del Bitcoin?</button>
+      <button class="suggestion-btn">¿Qué es Bitcoin?</button>
+      <button class="suggestion-btn">Muestra gráficos de BTC</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  import { addMessage } from '../scripts/chatbot'
+  import { io } from 'socket.io-client'
+
+  const socket = io(import.meta.env.PUBLIC_API_URL)
+
+  const messagesContainer = document.getElementById('messagesContainer')
+  const messageInput = document.getElementById('messageInput') as HTMLInputElement
+  const sendButton = document.getElementById('sendButton')
+  const suggestionBtns = document.querySelectorAll('.suggestion-btn')
+  const initialTime = document.getElementById('initialTime')
+  const clearChatBtn = document.querySelector('.clear-chat')
+
+  const hamburgerBtn = document.getElementById('hamburgerBtn')
+  const mobileMenu = document.getElementById('mobileMenu')
+  const mobileMenuOverlay = document.getElementById('mobileMenuOverlay')
+  const clearChatMobile = document.getElementById('clearChatMobile')
+
+  if (initialTime) {
+    initialTime.textContent = new Date().toLocaleTimeString()
+  }
+
+  let messagesArray: Record<string, string>[] = []
+
+  const savedMessages = JSON.parse(localStorage.getItem('chatMessages') || '[]')
+  savedMessages.forEach((msg: any) => {
+    addMessage(msg.text, msg.sender, messagesContainer)
+    messagesArray.push(msg)
+  })
+
+  function saveMessage(msg: string, sender: string) {
+    const message = { text: msg, sender }
+    messagesArray.push(message)
+    localStorage.setItem('chatMessages', JSON.stringify(messagesArray))
+  }
+
+  socket.on('response', (data) => {
+    const botMessage = data.success ? data.message : 'Ha ocurrido un error al recibir la respuesta...'
+    addMessage(botMessage, 'bot', messagesContainer)
+    saveMessage(botMessage, 'bot')
+
+    if (data.success && data.data) {
+      const isEmptyObject = typeof data.data === 'object' &&
+                            data.data !== null &&
+                            Object.keys(data.data).length === 0
+      
+      if (!isEmptyObject) {
+        const showSidebarEvent = new CustomEvent('showSidebar', {
+          detail: { summary: data.data },
+          bubbles: true,
+          composed: true
+        })
+        window.dispatchEvent(showSidebarEvent)
+      }
+    }
+  })
+
+  async function handleSendMessage() {
+    const msg = messageInput?.value.trim()
+    if (!msg) return
+
+    addMessage(msg, 'user', messagesContainer)
+    saveMessage(msg, 'user')
+
+    messageInput.value = ''
+
+    socket.emit('message', msg)
+  }
+
+  sendButton?.addEventListener('click', handleSendMessage)
+
+  messageInput?.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') handleSendMessage()
+  })
+
+  suggestionBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      messageInput.value = btn.textContent || ''
+      messageInput.focus()
+    })
+  })
+
+  function clearChat() {
+    localStorage.removeItem('chatMessages')
+    window.location.reload()
+  }
+
+  clearChatBtn?.addEventListener('click', clearChat)
+  clearChatMobile?.addEventListener('click', clearChat)
+
+  function toggleMenu() {
+    hamburgerBtn?.classList.toggle('active')
+    mobileMenu?.classList.toggle('active')
+    mobileMenuOverlay?.classList.toggle('active')
+  }
+
+  hamburgerBtn?.addEventListener('click', toggleMenu)
+  mobileMenuOverlay?.addEventListener('click', toggleMenu)
+
+  const mobileMenuItems = document.querySelectorAll('.mobile-menu-item')
+  mobileMenuItems.forEach(item => {
+    item.addEventListener('click', () => {
+      if (item.getAttribute('href')) toggleMenu()
+    })
+  })
+</script>
