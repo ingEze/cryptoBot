@@ -1,11 +1,20 @@
-export type LevelType = 'simpleInfo' | 'tokenInfo' | 'fullInfo' | 'marketInfo' | 'tickersInfo' | 'exchanges' | 'graph'
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type LevelType = 'simpleInfo' | 'tokenInfo' | 'fullInfo' | 'marketInfo' | 'tickersInfo' | 'exchanges' | 'graph' | 'trending' | 'global'
 
-export type CoinData = {
+export interface BotServiceResponse {
+  success: boolean
+  level: LevelType | 'error' | 'notFound' | string
+  message: string
+  data: any
+}
+
+export interface CoinData {
   id: string
-  aliases: string[]
-  type: string
-  network: string | null
-  contract: string | null
+  symbol: string
+  name: string
+  network?: string
+  contract?: string
+  type: 'coin' | 'token'
 }
 
 export type CoinParams = {

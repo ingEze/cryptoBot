@@ -65,10 +65,56 @@ export interface TickersInfoData {
 
 export interface ExchangeData {
   name: string
-  trust_rank: number
+  trust_score: number
+  trade_volume_24h_btc: number
+  image: string
+  trust_score_rank: number
+  country: string
+  year_established: string
+  description: string
+  url: string
 }
 
-export type ResponseType = 'simpleInfo' | 'tokenInfo' | 'marketInfo' | 'fullInfo' | 'tickersInfo' | 'exchanges' | 'graph'
+export interface TrendingData {
+  type: 'trending'
+  id: string | null
+  name: string | null
+  symbol: string | null
+  rank: number | null
+  image: string | null
+  price: number | null
+  price_btc: number | null
+  market_cap: number | null
+  volume_24h: number | null
+  sparkline: string | null
+  change_24h: number | null
+  info: {
+    title: string | null
+    description: string | null
+  } | null
+}
+
+export interface GlobalData {
+  active_cryptocurrencies: number
+  markets: number
+  total_market_cap: {
+    usd: number
+    btc: number
+  }
+  total_volume: {
+    usd: number
+    btc: number
+    eth: number
+  }
+  market_cap_percentage: {
+    btc: number
+    eth: number
+  }
+  market_cap_change_percentage_24h_usd: number
+  updated_at: number
+}
+
+export type ResponseType = 'simpleInfo' | 'tokenInfo' | 'marketInfo' | 'fullInfo' | 'tickersInfo' | 'exchanges' | 'graph' | 'trending' | 'global'
 
 export interface StructuredResponse {
   type: ResponseType

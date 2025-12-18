@@ -1,12 +1,12 @@
 import { CoinData, CoinParams } from '../types/types.js'
 import { ExtractInfo } from './extractMsgInfo.js'
 
-export function getParams(level: string, coinData: CoinData, msg?: string): CoinParams {
+export function getParams(level: string, coinData: CoinData | null, msg?: string): CoinParams {
   switch (level) {
   case 'simpleInfo':
     return {
       vs_currencies: 'usd',
-      ids: coinData.id,
+      ids: coinData?.id,
       include_last_updated_at: true,
       include_24hr_vol: true,
       include_market_cap: true,
@@ -16,7 +16,7 @@ export function getParams(level: string, coinData: CoinData, msg?: string): Coin
   case 'tokenInfo':
     return {
       vs_currencies: 'usd',
-      contract_addresses: coinData.contract,
+      contract_addresses: coinData?.contract,
       include_last_updated_at: true,
       include_24hr_vol: true,
       include_market_cap: true,
@@ -26,15 +26,12 @@ export function getParams(level: string, coinData: CoinData, msg?: string): Coin
   case 'marketInfo':
     return {
       vs_currency: 'usd',
-      ids: coinData.id,
+      ids: coinData?.id,
       order: 'market_cap_desc',
       per_page: msg ? ExtractInfo.extractPage(msg) : 10,
       page: 1,
       sparkline: false
     }
-
-  case 'fullInfo':
-    return {}
 
   case 'tickersInfo':
     return {
@@ -53,6 +50,11 @@ export function getParams(level: string, coinData: CoinData, msg?: string): Coin
       vs_currency: 'usd',
       days: msg ? ExtractInfo.extractDays(msg) : '1'
     }
+
+  case 'trending':
+  case 'global':
+  case 'fullInfo':
+    return {}
 
   default:
     return {}

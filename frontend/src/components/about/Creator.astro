@@ -1,0 +1,110 @@
+---
+---
+
+<section id="creator">
+  <h2>Sobre el Creador</h2>
+  <div class="creator-card">
+    <div class="creator-avatar">ES</div>
+    <div class="creator-info">
+      <h3>Ezequiel Saucedo</h3>
+      <p><strong>Backend & Software Developer</strong></p>
+      <p>Desarrollador especializado en backend con conocimientos en frontend utilizando Astro, HTML y CSS.</p>
+      <p>Este proyecto fue creado para expandir experiencia técnica y explorar tecnologías de comunicación en tiempo real, combinando WebSockets con arquitecturas modernas de backend.</p>
+    </div>
+  </div>
+  <div class="links">
+    <a href="https://github.com/ingEze/" target="_blank" class="link-button">
+      👨‍💻 GitHub Profile
+    </a>
+    <a href="https://github.com/ingEze/cryptoBot" target="_blank" class="link-button">
+      📦 Ver Repositorio
+    </a>
+  </div>
+</section>
+
+<style>
+  section {
+    background: rgba(36, 36, 62, 0.8);
+    margin: 40px 0;
+    padding: 60px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(138, 103, 255, 0.2);
+  }
+
+  h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #8a67ff;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(138, 103, 255, 0.3);
+  }
+
+  .creator-card {
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    max-width: 800px;
+    margin: 30px auto;
+    padding: 40px;
+    background: rgba(138, 103, 255, 0.1);
+    border-radius: 15px;
+    border: 1px solid rgba(138, 103, 255, 0.3);
+  }
+
+  .creator-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #8a67ff 0%, #6a4dff 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 60px;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 0 30px rgba(138, 103, 255, 0.5);
+  }
+
+  .creator-info h3 {
+    color: #8a67ff;
+    margin-bottom: 15px;
+    font-size: 24px;
+  }
+
+  .creator-info p {
+    color: #b0b0b0;
+    margin-bottom: 10px;
+  }
+
+  .links {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+  }
+
+  .link-button {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #8a67ff 0%, #6a4dff 100%);
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    font-weight: 500;
+    box-shadow: 0 4px 15px rgba(138, 103, 255, 0.3);
+  }
+
+  .link-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(138, 103, 255, 0.5);
+  }
+
+  @media (max-width: 768px) {
+    .creator-card {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

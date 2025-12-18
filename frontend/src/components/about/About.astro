@@ -1,0 +1,93 @@
+---
+---
+
+<section id="about">
+  <h2>¿Qué hace CryptoBot?</h2>
+  <p class="description">
+    CryptoBot es un asistente conversacional inteligente que te proporciona información actualizada sobre criptomonedas. Pregúntale sobre cualquier moneda y obtendrás datos en tiempo real.
+  </p>
+  <div class="features">
+    <div class="feature-card">
+      <div class="feature-icon">💬</div>
+      <h3>Conversacional</h3>
+      <p>Interactúa de forma natural preguntando sobre cualquier criptomoneda</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Tiempo Real</h3>
+      <p>Información actualizada al instante mediante WebSockets</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🎯</div>
+      <h3>Preciso</h3>
+      <p>Datos exactos de cotización y estadísticas del mercado</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔒</div>
+      <h3>Confiable</h3>
+      <p>Sistema robusto con logging y manejo de errores</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  section {
+    background: rgba(36, 36, 62, 0.8);
+    margin: 40px 0;
+    padding: 60px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(138, 103, 255, 0.2);
+  }
+
+  h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #8a67ff;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(138, 103, 255, 0.3);
+  }
+
+  .description {
+    text-align: center;
+    font-size: 18px;
+    color: #b0b0b0;
+    max-width: 800px;
+    margin: 0 auto 40px;
+  }
+
+  .features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .feature-card {
+    text-align: center;
+    padding: 30px;
+    border-radius: 15px;
+    background: rgba(138, 103, 255, 0.1);
+    border: 1px solid rgba(138, 103, 255, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(138, 103, 255, 0.3);
+  }
+
+  .feature-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  .feature-card h3 {
+    color: #8a67ff;
+    margin-bottom: 15px;
+  }
+
+  .feature-card p {
+    color: #b0b0b0;
+  }
+</style>

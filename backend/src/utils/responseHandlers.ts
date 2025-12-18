@@ -20,10 +20,12 @@ interface TokenInfoResponse {
   type: 'tokenInfo'
   data: {
     id: string
-    symbol: string
-    name: string
-    current_price_usd: number
-  }
+      usd: number
+      usd_market_cap: number
+      usd_24h_vol: number
+      usd_24h_change: number
+      last_updated_at: number
+    }
 }
 
 interface MarketInfoResponse {
@@ -92,7 +94,14 @@ interface ExchangesResponse {
   type: 'exchanges'
   data: Array<{
     name: string
-    trust_rank: number
+    trust_score: number
+    trade_volume_24h_btc: number
+    image: string
+    trust_score_rank: number
+    country: string
+    year_established: string
+    description: string
+    url: string
   }>
 }
 
@@ -106,6 +115,48 @@ interface GraphInfoResponse {
   }
 }
 
+interface TrendingData {
+  id: string | null
+  name: string | null
+  symbol: string | null
+  rank: number | null
+  image: string | null
+  price: number | null
+  price_btc: number | null
+  market_cap: string | number | null
+  volume_24h: string | number | null
+  sparkline: string | null
+  change_24h: number | null
+  info: {
+    title: string | null
+    description: string | null
+  } | null
+}
+
+interface TrendingResponse {
+  type: 'trending'
+  data: TrendingData
+}
+
+interface GlobalInfoResponse {
+  type: 'global'
+  data: {
+    market_cap_change_percentage_24h_usd: number
+    active_cryptocurrencies: number
+    markets: number
+    updated_at: number
+    total_volume: {
+      [key: string]: unknown
+    }
+    total_market_cap: {
+      [key: string]: unknown
+    }
+    market_cap_percentage: {
+      [key: string]: unknown
+    }
+  }
+}
+
 type ResponseData =
   | SimpleInfoResponse
   | TokenInfoResponse
@@ -114,6 +165,8 @@ type ResponseData =
   | TickersInfoResponse
   | ExchangesResponse
   | GraphInfoResponse
+  | TrendingResponse
+  | GlobalInfoResponse
 
 export const responseHandlers: Record<LevelType, (data: any) => string> = {
   simpleInfo: (data): string => {
@@ -139,16 +192,20 @@ export const responseHandlers: Record<LevelType, (data: any) => string> = {
   },
 
   tokenInfo: (data): string => {
+    const id = Object.keys(data)[0]
+    const info = data[id]
+
     const response: TokenInfoResponse = {
       type: 'tokenInfo',
       data: {
-        id: data.id,
-        symbol: data.symbol,
-        name: data.name,
-        current_price_usd: data.market_data?.current_price?.usd ?? 0
+        id: id,
+        usd: info.usd,
+        usd_market_cap: info.usd_market_cap,
+        usd_24h_vol: info.usd_24h_vol,
+        usd_24h_change: info.usd_24h_change,
+        last_updated_at: info.last_updated_at
       }
     }
-
     return JSON.stringify(response)
   },
 
@@ -240,8 +297,15 @@ export const responseHandlers: Record<LevelType, (data: any) => string> = {
 
   exchanges: (data): string => {
     const exchanges = data.map((ex: any) => ({
+      id: ex.id,
       name: ex.name,
-      trust_rank: ex.trust_score_rank
+      trust_score: ex.trust_score,
+      trade_volume_24h_btc: ex.trade_volume_24h_btc,
+      image: ex.image,
+      trust_score_rank: ex.trust_score_rank,
+      year_established: ex.year_established,
+      description: ex.description,
+      url: ex.url
     }))
 
     const response: ExchangesResponse = {
@@ -263,6 +327,62 @@ export const responseHandlers: Record<LevelType, (data: any) => string> = {
       }
     }
     return JSON.stringify(response)
+  },
+
+  trending: (data): string => {
+    const coins = data.coins.map((item: any) => ({
+      id: item.id ?? null,
+      name: item.name ?? null,
+      symbol: item.symbol ?? null,
+      rank: item.rank,
+      image: item.image ?? null,
+      price: item.price ?? null,
+      price_btc: item.price_btc ?? null,
+      market_cap: item.market_cap ?? null,
+      volume_24h: item.volume_24h ?? null,
+      sparkline: item.sparkline ?? null,
+      change_24h: item.change_24h ?? null,
+      info: item.inf ?? null
+        ? {
+          title: item.info.title ?? null,
+          description: item.info.description ?? null
+        }
+        : null
+    }))
+
+    const response: TrendingResponse = {
+      type: 'trending',
+      data: coins
+    }
+
+    return JSON.stringify(response)
+  },
+
+  global: (data): string => {
+    const totalVolume = Object.entries(data.total_volume)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
+
+    const totalMarketCap = Object.entries(data.total_market_cap)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
+
+    const marketCapPercentage = Object.entries(data.market_cap_percentage)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
+      .slice(0, 5)
+
+    const response: GlobalInfoResponse = {
+      type: 'global',
+      data: {
+        market_cap_change_percentage_24h_usd: data.market_cap_change_percentage_24h_usd,
+        active_cryptocurrencies: data.active_cryptocurrencies,
+        markets: data.markets,
+        total_volume: Object.fromEntries(totalVolume),
+        total_market_cap: Object.fromEntries(totalMarketCap),
+        market_cap_percentage: Object.fromEntries(marketCapPercentage),
+        updated_at: data.updated_at
+      }
+    }
+
+    return JSON.stringify(response)
   }
 }
 
@@ -274,5 +394,7 @@ export type {
   FullInfoResponse,
   TickersInfoResponse,
   ExchangesResponse,
-  GraphInfoResponse
+  GraphInfoResponse,
+  TrendingResponse,
+  GlobalInfoResponse
 }

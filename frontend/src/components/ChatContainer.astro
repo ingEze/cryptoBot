@@ -1,7 +1,5 @@
 ---
-
 ---
-
 <div class="chat-container" id="chatContainer">
   <div class="header">
     <div class="h-title">
@@ -18,8 +16,6 @@
       </button>
     </div>
   </div>
-
-  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 
   <div class="mobile-menu" id="mobileMenu">
     <div class="mobile-menu-items">
@@ -57,6 +53,7 @@
         id="messageInput"
         class="input-field"
         placeholder="Pregunta sobre Bitcoin, Ethereum, precios..."
+        autocomplete="off"
       />
       <button id="sendButton" class="send-button">
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -119,12 +116,15 @@
                             data.data !== null &&
                             Object.keys(data.data).length === 0
       
-      if (!isEmptyObject) {
+      const excludedTypes = ['global', 'trending', 'tickersInfo', 'exchanges']
+      
+      if (!isEmptyObject && !excludedTypes.includes(data.level) ) {
         const showSidebarEvent = new CustomEvent('showSidebar', {
           detail: { summary: data.data },
           bubbles: true,
           composed: true
         })
+
         window.dispatchEvent(showSidebarEvent)
       }
     }

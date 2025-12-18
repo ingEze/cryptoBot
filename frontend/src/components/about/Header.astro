@@ -1,0 +1,113 @@
+---
+---
+
+<header>
+  <nav class="container">
+    <div class="logo">🤖 CryptoBot</div>
+    <div class="hamburger" id="hamburger">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#about">¿Qué hace?</a></li>
+      <li><a href="#how">¿Cómo funciona?</a></li>
+      <li><a href="#tech">Tech Stack</a></li>
+      <li><a href="#creator">Creador</a></li>
+    </ul>
+  </nav>
+</header>
+
+<style>
+  header {
+    background: rgba(15, 12, 41, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid rgba(138, 103, 255, 0.3);
+  }
+
+  nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    font-size: 28px;
+    font-weight: bold;
+    color: #8a67ff;
+    text-shadow: 0 0 20px rgba(138, 103, 255, 0.5);
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: #e0e0e0;
+    text-decoration: none;
+    transition: color 0.3s;
+    font-weight: 500;
+  }
+
+  .nav-links a:hover {
+    color: #8a67ff;
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+    z-index: 101;
+  }
+
+  .hamburger span {
+    width: 25px;
+    height: 3px;
+    background: #8a67ff;
+    border-radius: 3px;
+    transition: all 0.3s;
+  }
+
+  .hamburger.active span:nth-child(1) {
+    transform: rotate(45deg) translate(8px, 8px);
+  }
+
+  .hamburger.active span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .hamburger.active span:nth-child(3) {
+    transform: rotate(-45deg) translate(7px, -6px);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      position: fixed;
+      top: 70px;
+      right: -100%;
+      width: 70%;
+      height: calc(100vh - 70px);
+      background: rgba(15, 12, 41, 0.98);
+      flex-direction: column;
+      padding: 40px 20px;
+      gap: 20px;
+      transition: right 0.3s;
+      border-left: 1px solid rgba(138, 103, 255, 0.3);
+    }
+
+    .nav-links.active {
+      right: 0;
+    }
+
+    .hamburger {
+      display: flex;
+    }
+  }
+</style>

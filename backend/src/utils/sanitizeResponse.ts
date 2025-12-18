@@ -13,7 +13,8 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
     const info = response.data[id]
     sanitize = {
       [id]: {
-        name: id,
+        id: info.id,
+        name: info.name,
         usd: info.usd,
         usd_market_cap: info.usd_market_cap,
         usd_24h_vol: info.usd_24h_vol,
@@ -97,7 +98,7 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
     break
   }
 
-  case 'exchange':
+  case 'exchanges':
     sanitize = response.data
     break
 
@@ -116,6 +117,62 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
     }))
 
     sanitize = comnined
+  }
+    break
+
+  case 'trending': {
+    const data = response.data
+    const coins = data.coins.map(({ item }: any) => {
+      const d = item.data
+
+      return {
+        id: item.id,
+        name: item.name,
+        symbol: item.symbol,
+        rank: item.market_cap_rank,
+        image: item.small,
+        price: d?.price ?? null,
+        price_btc: Number(item.price_btc ?? null),
+        market_cap: d?.market_cap ?? null,
+        volume_24h: d?.total_volume ?? null,
+        sparkline: d?.sparkline ?? null,
+        change_24h: d?.price_change_percentage_24h?.usd ?? null,
+        info: d?.content
+          ? {
+            title: d.content.title ?? null,
+            description: d.content.description ?? null
+          }
+          : null
+      }
+    })
+    sanitize = { coins }
+  }
+    break
+
+  case 'global': {
+    const data = response.data.data
+
+    const totalVolume = Object.entries(data.total_volume)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
+
+    const totalMarketCap = Object.entries(data.total_market_cap)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
+
+    const marketCapPercentage = Object.entries(data.market_cap_percentage)
+      .sort(([, a], [, b]) => (b as number) - (a as number))
+      .slice(0, 5)
+
+    const res = {
+      market_cap_change_percentage_24h_usd: data.market_cap_change_percentage_24h_usd,
+      active_cryptocurrencies: data.active_cryptocurrencies,
+      markets: data.markets,
+      total_volume: Object.fromEntries(totalVolume),
+      total_market_cap: Object.fromEntries(totalMarketCap),
+      market_cap_percentage: Object.fromEntries(marketCapPercentage),
+      updated_at: data.updated_at
+    }
+
+    sanitize = res
   }
   }
   return sanitize

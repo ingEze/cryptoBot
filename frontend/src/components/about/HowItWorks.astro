@@ -1,0 +1,98 @@
+---
+---
+
+<section id="how">
+  <h2>¿Cómo funciona?</h2>
+  <p class="description">
+    Simplemente pregúntale sobre cualquier criptomoneda y CryptoBot te responderá con la información más reciente:
+  </p>
+  <div class="chat-example">
+    <div class="message user-message">
+      <strong>Tú:</strong> Oye, ¿sabes cuánto está cotizando BTC a día de hoy?
+    </div>
+    <div class="message bot-message">
+      <strong>🤖 CryptoBot:</strong> Bitcoin (BTC) está cotizando actualmente a $42,350.75 USD
+    </div>
+    <div class="message user-message">
+      <strong>Tú:</strong> ¿Y qué tal ETH?
+    </div>
+    <div class="message bot-message">
+      <strong>🤖 CryptoBot:</strong> Ethereum (ETH) tiene un precio actual de $2,245.60 USD
+    </div>
+  </div>
+  <p class="footer-text">
+    La comunicación es bidireccional en tiempo real gracias a Socket.IO, permitiendo respuestas instantáneas sin necesidad de recargar la página.
+  </p>
+</section>
+
+<style>
+  section {
+    background: rgba(36, 36, 62, 0.8);
+    margin: 40px 0;
+    padding: 60px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(138, 103, 255, 0.2);
+  }
+
+  h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #8a67ff;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(138, 103, 255, 0.3);
+  }
+
+  .description {
+    text-align: center;
+    font-size: 18px;
+    color: #b0b0b0;
+    max-width: 800px;
+    margin: 0 auto 40px;
+  }
+
+  .chat-example {
+    background: rgba(15, 12, 41, 0.6);
+    padding: 30px;
+    border-radius: 15px;
+    margin: 30px auto;
+    max-width: 600px;
+    border-left: 5px solid #8a67ff;
+  }
+
+  .message {
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 10px;
+  }
+
+  .user-message {
+    background: linear-gradient(135deg, #8a67ff 0%, #6a4dff 100%);
+    color: white;
+    margin-left: 50px;
+    box-shadow: 0 4px 15px rgba(138, 103, 255, 0.3);
+  }
+
+  .bot-message {
+    background: rgba(36, 36, 62, 0.8);
+    border: 2px solid #8a67ff;
+    color: #e0e0e0;
+    margin-right: 50px;
+  }
+
+  .footer-text {
+    text-align: center;
+    color: #b0b0b0;
+    margin-top: 30px;
+  }
+
+  @media (max-width: 768px) {
+    .user-message {
+      margin-left: 20px;
+    }
+
+    .bot-message {
+      margin-right: 20px;
+    }
+  }
+</style>

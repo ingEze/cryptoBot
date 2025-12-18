@@ -1,0 +1,92 @@
+---
+---
+
+<section id="tech">
+  <h2>Tech Stack</h2>
+  <div class="tech-grid">
+    <div class="tech-item">
+      <h4>Backend</h4>
+      <ul>
+        <li>Node.js</li>
+        <li>TypeScript</li>
+        <li>Socket.IO</li>
+        <li>Redis</li>
+        <li>Morgan & Winston</li>
+        <li>CORS</li>
+      </ul>
+    </div>
+    <div class="tech-item">
+      <h4>Frontend</h4>
+      <ul>
+        <li>Astro</li>
+        <li>TypeScript</li>
+        <li>HTML & CSS</li>
+        <li>Socket.IO Client</li>
+      </ul>
+    </div>
+  </div>
+  <p class="footer-text">
+    Arquitectura moderna y escalable con comunicación en tiempo real, caché eficiente con Redis, y logging robusto para monitoreo y debugging.
+  </p>
+</section>
+
+<style>
+  section {
+    background: rgba(36, 36, 62, 0.8);
+    margin: 40px 0;
+    padding: 60px 20px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(138, 103, 255, 0.2);
+  }
+
+  h2 {
+    font-size: 36px;
+    margin-bottom: 30px;
+    color: #8a67ff;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(138, 103, 255, 0.3);
+  }
+
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+  }
+
+  .tech-item {
+    padding: 20px;
+    background: rgba(138, 103, 255, 0.1);
+    border-radius: 10px;
+    text-align: center;
+    border: 2px solid rgba(138, 103, 255, 0.3);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+
+  .tech-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(138, 103, 255, 0.3);
+  }
+
+  .tech-item h4 {
+    color: #8a67ff;
+    margin-bottom: 10px;
+  }
+
+  .tech-item ul {
+    list-style: none;
+    color: #b0b0b0;
+  }
+
+  .tech-item ul li {
+    padding: 5px 0;
+  }
+
+  .footer-text {
+    text-align: center;
+    color: #b0b0b0;
+    margin-top: 40px;
+    font-size: 16px;
+  }
+</style>
