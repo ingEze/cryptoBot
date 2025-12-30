@@ -2,7 +2,7 @@
 import { getCoinFromMsg, coinNotFound, getParams, getLevel, fetchAPI, buildResponse, sanitizeResponse } from '../utils/index.js'
 import logger from '../utils/logger.js'
 import { dontNeedCoinInfo } from '../utils/getLevel.js'
-import { BotServiceResponse, CoinData } from 'src/types/types.js'
+import { BotServiceResponse, CoinData } from '../types/types.js'
 
 export async function botService(msg: string): Promise<BotServiceResponse> {
   let endpoint: string
@@ -18,7 +18,7 @@ export async function botService(msg: string): Promise<BotServiceResponse> {
       const responseBot = coinNotFound()
       return {
         success: true,
-        level: 'notFound',
+        level: 'NOT_FOUND_ERROR',
         message: responseBot,
         data: {}
       }
@@ -86,7 +86,7 @@ export async function botService(msg: string): Promise<BotServiceResponse> {
     logger.error('Invalid level detected')
     return {
       success: false,
-      level: 'error',
+      level: 'ERROR',
       message: 'Lo siento! no he logrado conseguir información de lo que me has pedido',
       data: {}
     }
@@ -95,7 +95,12 @@ export async function botService(msg: string): Promise<BotServiceResponse> {
   const response = await fetchAPI(endpoint, params)
 
   if (!response) {
-    throw new Error('Ha ocurrido un error al obtener la información que me pediste. Lo siento, trabajaré en solucionarlo.')
+    return {
+      success: false,
+      level: 'API_ERROR',
+      message: 'Uy, algo salió mal mientras intentaba ayudarte 😕 ¿Probamos de nuevo en un momento?',
+      data: {}
+    }
   }
 
   return {

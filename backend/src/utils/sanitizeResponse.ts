@@ -3,14 +3,14 @@ import { AxiosResponse } from 'axios'
 import { Ticker, TickerSimplificado } from '../types/types.js'
 import { tickers } from './tickers.js'
 
-export function sanitizeResponse(level: string, response: AxiosResponse): AxiosResponse {
+export function sanitizeResponse(level: string, response: any): AxiosResponse {
   let sanitize
 
   switch (level) {
   case 'simpleInfo':
   case 'tokenInfo': {
-    const id = Object.keys(response.data)[0]
-    const info = response.data[id]
+    const id = Object.keys(response)[0]
+    const info = response[id]
     sanitize = {
       [id]: {
         id: info.id,
@@ -22,11 +22,11 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
         last_updated_at: info.last_updated_at
       }
     }
-  }
     break
+  }
 
   case 'marketInfo': {
-    const result = response.data.map((data: any) => {
+    const result = response.map((data: any) => {
       return {
         id: data.id,
         symbol: data.symbol,
@@ -47,27 +47,27 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
   case 'fullInfo': {
     const allowedCurrentPrice = ['ars', 'eur', 'usd', 'eth', 'btc']
     const current_price = Object.fromEntries(
-      Object.entries(response.data.market_data.current_price)
+      Object.entries(response.market_data.current_price)
         .filter(([key]) => allowedCurrentPrice.includes(key))
     )
 
-    const tickersArray: Ticker[] = response.data.tickers ?? []
+    const tickersArray: Ticker[] = response.tickers ?? []
     const tickersData = tickers(tickersArray)
 
     sanitize = {
-      name: response.data.name,
-      description: response.data.description,
-      symbol: response.data.symbol,
+      name: response.name,
+      description: response.description,
+      symbol: response.symbol,
       links: {
-        homepage: response.data.links.homepage ?? [],
-        whitepaper: response.data.links.whitepaper ?? [],
-        blockchain_site: response.data.links.blockchain_site ?? []
+        homepage: response.links.homepage ?? [],
+        whitepaper: response.links.whitepaper ?? [],
+        blockchain_site: response.links.blockchain_site ?? []
       },
-      image: response.data.image.small,
+      image: response.image.small,
       market_data: {
         current_price
       },
-      last_updated: response.data.last_updated,
+      last_updated: response.last_updated,
       tickers: {
         topTickers: tickersData.topTickers,
         avgPriceUsd: tickersData.avgPriceUsd,
@@ -78,7 +78,7 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
   }
 
   case 'tickersInfo': {
-    const tickers: TickerSimplificado[] = response.data.tickers.map((t: any) => ({
+    const tickers: TickerSimplificado[] = response.tickers.map((t: any) => ({
       base: t.base,
       target: t.target,
       market: t.market.name,
@@ -99,7 +99,7 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
   }
 
   case 'exchanges':
-    sanitize = response.data
+    sanitize = response
     break
 
   case 'graph': {
@@ -107,7 +107,7 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
       prices,
       market_caps,
       total_volumes
-    } = response.data
+    } = response
 
     const comnined = prices.map(([timestamp, price]: [number, number], i: number) => ({
       timestamp,
@@ -117,12 +117,11 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
     }))
 
     sanitize = comnined
-  }
     break
+  }
 
   case 'trending': {
-    const data = response.data
-    const coins = data.coins.map(({ item }: any) => {
+    const coins = response.coins.map(({ item }: any) => {
       const d = item.data
 
       return {
@@ -146,33 +145,29 @@ export function sanitizeResponse(level: string, response: AxiosResponse): AxiosR
       }
     })
     sanitize = { coins }
-  }
     break
+  }
 
   case 'global': {
-    const data = response.data.data
-
-    const totalVolume = Object.entries(data.total_volume)
+    const totalVolume = Object.entries(response.data.total_volume)
       .sort(([, a], [, b]) => (b as number) - (a as number))
 
-    const totalMarketCap = Object.entries(data.total_market_cap)
+    const totalMarketCap = Object.entries(response.data.total_market_cap)
       .sort(([, a], [, b]) => (b as number) - (a as number))
 
-    const marketCapPercentage = Object.entries(data.market_cap_percentage)
+    const marketCapPercentage = Object.entries(response.data.market_cap_percentage)
       .sort(([, a], [, b]) => (b as number) - (a as number))
       .slice(0, 5)
 
-    const res = {
-      market_cap_change_percentage_24h_usd: data.market_cap_change_percentage_24h_usd,
-      active_cryptocurrencies: data.active_cryptocurrencies,
-      markets: data.markets,
+    sanitize = {
+      market_cap_change_percentage_24h_usd: response.data.market_cap_change_percentage_24h_usd,
+      active_cryptocurrencies: response.data.active_cryptocurrencies,
+      markets: response.data.markets,
       total_volume: Object.fromEntries(totalVolume),
       total_market_cap: Object.fromEntries(totalMarketCap),
       market_cap_percentage: Object.fromEntries(marketCapPercentage),
-      updated_at: data.updated_at
+      updated_at: response.data.updated_at
     }
-
-    sanitize = res
   }
   }
   return sanitize

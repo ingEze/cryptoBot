@@ -1,3 +1,9 @@
+declare global {
+  interface Window {
+    Chart: any
+  }
+}
+
 import type { ExchangeData, FullInfoData, GlobalData, MarketInfoData, SimpleInfoData, StructuredResponse, TickersInfoData, TrendingData } from "../types/chatbot"
 import type { GraphData, GraphDataPoint } from "../types/data"
 
@@ -71,13 +77,30 @@ function formatResponse(response: StructuredResponse): string {
 
 function formatGraphPlaceholder(data: GraphData): string {
   return `
-    <div class="crypto-info-container">
-      <div class="crypto-header">
-        <h3>📊 Gráfico Generado</h3>
+    <div class="token-info-card" style="max-width: 400px;">
+      <div class="crypto-header-gradient">
+        <span class="header-icon">📊</span>
+        <h3>Gráfico Generado</h3>
       </div>
-      <p style="margin: 1rem 0; color: #6b7280;">
-        El gráfico se ha generado correctamente. Puedes verlo en el panel lateral.
-      </p>
+
+      <div class="token-main-info">
+        <div style="text-align: center; padding: 1.5rem 0;">
+          <div style="font-size: 3rem; margin-bottom: 1rem; animation: pulse 2s ease-in-out infinite;">
+            ✅
+          </div>
+          <p style="font-size: 1rem; color: #10b981; font-weight: 600; margin: 0 0 0.5rem 0;">
+            ¡Gráfico listo!
+          </p>
+          <p style="font-size: 0.875rem; color: #d1d5db; margin: 0; line-height: 1.5;">
+            El gráfico se ha generado correctamente.<br/>
+            Puedes verlo en el panel lateral →
+          </p>
+        </div>
+      </div>
+
+      <div class="token-footer">
+        <p>💡 Tip: Usa los tabs del panel para ver precio, market cap o volumen</p>
+      </div>
     </div>
   `
 }
@@ -87,7 +110,7 @@ function formatSimpleInfo(data: SimpleInfoData): string {
   const changeColor = data.prices.change_24h >= 0 ? '#10b981' : '#ef4444'
   
   return `
-    <div class="crypto-info-container">
+    <div class="crypto-info-container simple">
       <div class="crypto-header">
         <h3>📌 Información de ${data.id}</h3>
       </div>
@@ -337,50 +360,91 @@ function formatTokenInfo(data: any): string {
 }
 
 function formatMarketInfo(data: MarketInfoData): string {
+  const formatCurrency = (value: number): string => {
+    if (value >= 1e12) return `$${(value / 1e12).toFixed(2)}T`;
+    if (value >= 1e9) return `$${(value / 1e9).toFixed(2)}B`;
+    if (value >= 1e6) return `$${(value / 1e6).toFixed(2)}M`;
+    if (value >= 1e3) return `$${(value / 1e3).toFixed(2)}K`;
+    return `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}`;
+  };
+
+  const formatPrice = (value: number): string => {
+    return value < 1 
+      ? `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 8 })}`
+      : `$${value.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  };
+
   return `
-    <div class="crypto-info-container">
-      <div class="crypto-header-with-icon">
-        <img src="${data.image}" alt="${data.name}" class="coin-icon" />
-        <h3>📊 ${data.name} (${data.symbol.toUpperCase()})</h3>
+    <div class="token-info-card" style="max-width: 400px;">
+      <div class="crypto-header-gradient">
+        <span class="header-icon">📊</span>
+        <h3>Información de Mercado</h3>
       </div>
-      
-      <div class="crypto-section">
-        <h4 class="section-title">💵 Precio</h4>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">Actual</span>
-            <span class="info-value">$${data.prices.current.toLocaleString()}</span>
+
+      <div class="token-main-info">
+        <div class="token-identity">
+          <img src="${data.image}" alt="${data.name}" class="coin-icon" 
+               onerror="this.outerHTML='<div class=&quot;token-symbol-badge&quot;>${data.symbol.charAt(0).toUpperCase()}</div>'" 
+               style="width: 56px; height: 56px; border-radius: 50%; border: 2px solid rgba(99, 102, 241, 0.3);" />
+          <div class="token-name-section">
+            <span class="token-name">${data.name}</span>
+            <span class="token-id">${data.symbol.toUpperCase()}</span>
           </div>
-          <div class="info-item">
-            <span class="info-label">High 24h</span>
-            <span class="info-value">$${data.prices.high_24h.toLocaleString()}</span>
+        </div>
+
+        <div class="token-price-highlight">
+          <span class="price-label">Precio Actual</span>
+          <span class="price-amount">${formatPrice(data.prices.current)}</span>
+        </div>
+      </div>
+
+      <div class="token-details-grid" style="padding: 1rem 1.25rem;">
+        <div class="detail-card highlight">
+          <span class="detail-icon">📈</span>
+          <div class="detail-content">
+            <span class="detail-label">High 24h</span>
+            <span class="detail-value price">${formatPrice(data.prices.high_24h)}</span>
           </div>
-          <div class="info-item">
-            <span class="info-label">Low 24h</span>
-            <span class="info-value">$${data.prices.low_24h.toLocaleString()}</span>
+        </div>
+
+        <div class="detail-card highlight">
+          <span class="detail-icon">📉</span>
+          <div class="detail-content">
+            <span class="detail-label">Low 24h</span>
+            <span class="detail-value price">${formatPrice(data.prices.low_24h)}</span>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <span class="detail-icon">💰</span>
+          <div class="detail-content">
+            <span class="detail-label">Market Cap</span>
+            <span class="detail-value">${formatCurrency(data.market.cap)}</span>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <span class="detail-icon">🏆</span>
+          <div class="detail-content">
+            <span class="detail-label">Ranking</span>
+            <span class="detail-value">#${data.market.rank}</span>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <span class="detail-icon">📊</span>
+          <div class="detail-content">
+            <span class="detail-label">Volumen 24h</span>
+            <span class="detail-value">${formatCurrency(data.market.volume_24h)}</span>
           </div>
         </div>
       </div>
 
-      <div class="crypto-section">
-        <h4 class="section-title">📈 Mercado</h4>
-        <div class="info-grid">
-          <div class="info-item">
-            <span class="info-label">Market Cap</span>
-            <span class="info-value">$${data.market.cap.toLocaleString()}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Ranking</span>
-            <span class="info-value">#${data.market.rank}</span>
-          </div>
-          <div class="info-item">
-            <span class="info-label">Volumen 24h</span>
-            <span class="info-value">$${data.market.volume_24h.toLocaleString()}</span>
-          </div>
-        </div>
+      <div class="token-footer">
+        <p>💡 Información actualizada del mercado</p>
       </div>
     </div>
-  `
+  `;
 }
 
 function formatFullInfo(data: FullInfoData): string {
@@ -1151,6 +1215,11 @@ function initializeChart(chartId: string, graphData: GraphDataPoint[]): void {
   const ctx = canvas.getContext('2d')
   if (!ctx) return
 
+  if (typeof window.Chart === 'undefined') {
+    console.error('Chart.js no está cargando')
+    return
+  }
+
   const labels = graphData.map(d => new Date(d.timestamp).toLocaleDateString('es-AR', { 
     month: 'short', 
     day: 'numeric',
@@ -1162,7 +1231,7 @@ function initializeChart(chartId: string, graphData: GraphDataPoint[]): void {
   const volumeData = graphData.map(d => d.total_volume)
 
   // @ts-ignore 
-  const chart = new Chart(ctx, {
+  const chart = new window.Chart(ctx, {
     type: 'line',
     data: {
       labels,

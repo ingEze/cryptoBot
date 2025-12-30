@@ -306,6 +306,12 @@
   max-width: 100%;
 }
 
+.crypto-info-container.simple,
+.crypto-info-container.market {
+  width: 320px;
+}
+
+
 .crypto-info-container.full-info {
   gap: 1.25rem;
 }

@@ -1,5 +1,5 @@
-import { patterns } from './data/Days'
-import { patternsPage } from './data/pages'
+import { patterns } from './data/Days.js'
+import { patternsPage } from './data/pages.js'
 
 export class ExtractInfo {
   static extractDays(msg: string): { type: string, value: string } | string {

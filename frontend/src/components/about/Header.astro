@@ -18,6 +18,34 @@
   </nav>
 </header>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const hamburger = document.getElementById('hamburger')
+    const navLinks = document.getElementById('navLinks')
+    const links = navLinks?.querySelectorAll('a')
+
+    hamburger?.addEventListener('click', () => {
+      hamburger.classList.toggle('active')
+      navLinks?.classList.toggle('active')
+    })
+
+    links?.forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger?.classList.remove('active')
+        navLinks?.classList.remove('active')
+      })
+    })
+
+    document.addEventListener('click', (e) => {
+      const target = e.target as Node
+      if (!hamburger?.contains(target) && !navLinks?.contains(target)) {
+        hamburger?.classList.remove('active')
+        navLinks?.classList.remove('active')
+      }
+    })
+  })
+</script>
+
 <style>
   header {
     background: rgba(15, 12, 41, 0.95);
@@ -46,6 +74,8 @@
     display: flex;
     gap: 30px;
     list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
   .nav-links a {
@@ -93,17 +123,28 @@
       top: 70px;
       right: -100%;
       width: 70%;
+      max-width: 300px;
       height: calc(100vh - 70px);
       background: rgba(15, 12, 41, 0.98);
       flex-direction: column;
       padding: 40px 20px;
       gap: 20px;
-      transition: right 0.3s;
+      transition: right 0.3s ease-in-out;
       border-left: 1px solid rgba(138, 103, 255, 0.3);
     }
 
     .nav-links.active {
       right: 0;
+    }
+
+    .nav-links li {
+      width: 100%;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 10px;
+      text-align: center;
     }
 
     .hamburger {

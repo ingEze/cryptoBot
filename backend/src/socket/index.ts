@@ -1,0 +1,42 @@
+import { createServer } from 'http'
+import { Server } from 'socket.io'
+import logger from '../utils/logger.js'
+import { botService } from '../service/bot.service.js'
+import { corsOptions } from '../config/cors.js'
+import { connectRedis } from '../config/redis.js'
+
+async function bootstrap(): Promise<void> {
+  const PORT = process.env.PORT || 3000
+  try {
+    await connectRedis()
+
+    const httpServer = createServer()
+    const io = new Server(httpServer, { cors: corsOptions })
+
+    io.on('connection', (socket) => {
+      socket.on('message', async(msg: string) => {
+        try {
+          const response = await botService(String(msg))
+          socket.emit('response', response)
+        } catch (err) {
+          logger.error(err)
+          socket.emit('response', {
+            success: false,
+            message: 'Ocurrió un error procesando tu mensaje'
+          })
+        }
+      })
+
+      socket.on('disconnect', () => socket.id)
+    })
+
+    httpServer.listen(PORT, () => {
+      logger.info(`Server running on ${process.env.APP_URL}:${PORT}`)
+    })
+  } catch (err) {
+    logger.error('Error during bootstrap', err)
+    process.exit(1)
+  }
+}
+
+export default bootstrap

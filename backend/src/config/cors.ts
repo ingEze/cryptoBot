@@ -3,9 +3,8 @@ import { Request, Response, NextFunction } from 'express'
 export const corsConfig = {
   allowedOrigins: [
     'http://localhost:4321',
-    'http://localhost:3000',
     'http://127.0.0.1:4321',
-    'http://127.0.0.1:3000'
+    process.env.FRONTEND_URL
   ],
 
   methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT', 'OPTIONS'],
