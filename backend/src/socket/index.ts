@@ -21,7 +21,9 @@ async function bootstrap(): Promise<void> {
 
     const io = new Server(httpServer, {
       cors: {
-        origin: process.env.FRONTEND_URL,
+        origin: [
+          process.env.FRONTEND_URL ?? 'http://127.0.0.1:4321'
+        ],
         methods: ['GET', 'POST'],
         credentials: true
       }
