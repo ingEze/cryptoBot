@@ -1,5 +1,6 @@
 {
-  "name": "finances-bot",
+  "name": "crypto-bot",
+  "description": "Bot informativo sobre el mercado de cryptos",
   "version": "1.0.0",
   "main": "build.js",
   "type": "module",
@@ -9,9 +10,8 @@
     "start": "node dist/index.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "author": "Ezequiel Saucedo",
+  "license": "MIT",
   "devDependencies": {
     "@eslint/js": "^9.39.1",
     "@types/morgan": "^1.9.10",
@@ -29,6 +29,7 @@
     "dotenv": "^17.2.3",
     "esbuild": "^0.27.2",
     "express": "^5.1.0",
+    "fast-glob": "^3.3.3",
     "morgan": "^1.10.1",
     "redis": "^5.9.0",
     "socket.io": "^4.8.1",

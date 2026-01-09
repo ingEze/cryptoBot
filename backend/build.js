@@ -3,7 +3,7 @@ import { execSync } from 'child_process'
 import glob from 'fast-glob'
 
 console.log('🔨 Compilando JavaScript con ESBuild...')
-const entryPoints = await glob('./backend/src/**/*.ts')
+const entryPoints = await glob('./src/**/*.ts')
 
 await build({
   entryPoints,
