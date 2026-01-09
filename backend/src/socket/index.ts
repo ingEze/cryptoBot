@@ -2,7 +2,6 @@ import { createServer } from 'http'
 import { Server } from 'socket.io'
 import logger from '../utils/logger.js'
 import { botService } from '../service/bot.service.js'
-import { corsOptions } from '../config/cors.js'
 import { connectRedis } from '../config/redis.js'
 
 async function bootstrap(): Promise<void> {
@@ -11,7 +10,13 @@ async function bootstrap(): Promise<void> {
     await connectRedis()
 
     const httpServer = createServer()
-    const io = new Server(httpServer, { cors: corsOptions })
+    const io = new Server(httpServer, {
+      cors: {
+        origin: process.env.FRONTEND_URL,
+        methods: ['GET', 'POST'],
+        credentials: true
+      }
+    })
 
     io.on('connection', (socket) => {
       socket.on('message', async(msg: string) => {
