@@ -72,6 +72,7 @@
 
 <script>
   import { addMessage } from '../scripts/chatbot'
+  import { initSidebar } from '../scripts/initSidebar'
   import { io } from 'socket.io-client'
 
   const socket = io(import.meta.env.PUBLIC_API_URL || 'http://localhost:3000')
@@ -178,4 +179,10 @@
       if (item.getAttribute('href')) toggleMenu()
     })
   })
+
+  try {
+    initSidebar()
+  } catch (err) {
+    console.warn('initSidebar failed to initialize', err)
+  }
 </script>
