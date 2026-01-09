@@ -6,7 +6,7 @@ import { corsOptions } from '../config/cors.js'
 import { connectRedis } from '../config/redis.js'
 
 async function bootstrap(): Promise<void> {
-  const PORT = process.env.PORT || 3000
+  const PORT = Number(process.env.PORT) || 3000
   try {
     await connectRedis()
 
@@ -30,9 +30,10 @@ async function bootstrap(): Promise<void> {
       socket.on('disconnect', () => socket.id)
     })
 
-    httpServer.listen(PORT, () => {
-      logger.info(`Server running on ${process.env.APP_URL}:${PORT}`)
+    httpServer.listen(PORT, '0.0.0.0', () => {
+      logger.info(`Server running on port ${PORT}`)
     })
+
   } catch (err) {
     logger.error('Error during bootstrap', err)
     process.exit(1)
