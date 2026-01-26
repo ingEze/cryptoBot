@@ -45,7 +45,7 @@ export const LEVELS = {
     'último', 'last', 'close', 'cierre', 'apertura', 'open',
 
     // Movement questions
-    'subió o bajó', 'va subiendo', 'va bajando', 'movimiento',
+    'subió o bajó', 'subio o bajo', 'va subiendo', 'va bajando', 'movimiento',
     'cambió mucho', 'varió', 'fluctuó', 'se movió',
     'up or down', 'going up', 'going down', 'movement',
 
